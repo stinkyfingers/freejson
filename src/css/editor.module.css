@@ -1,0 +1,74 @@
+.editor {
+    margin: auto;
+    width: 100vw;
+}
+.content {
+    display: flex;
+    justify-content: space-around;
+}
+.textarea {
+    width: 47.5vw;
+    height: 80vh;
+    border: 1px solid #ccc;
+    resize: none;
+}
+.jsonEditor {
+    width: 47.5vw;
+    height: 80vh;
+    padding: .2em;
+    overflow: scroll;
+}
+.pre {
+    margin: 0
+}
+.preview {
+    width: 40vw;
+    height: 80vh;
+    border: 1px solid #ccc;
+    padding: .2em;
+    overflow: scroll;
+}
+.label {
+    font-size: .8em;
+    padding: 0 0 .2em 0;
+    color: #bbb;
+}
+.previewLabel {
+    font-size: .8em;
+    padding: 0 0 .2em 0;
+    color: #2ae;
+}
+.formatError {
+    min-height: 1.2em;
+    color: #e77;
+    margin:.2em auto;
+    width: 95vw;
+}
+.mode:hover {
+    cursor: pointer;
+    color: #4cf;
+}
+.selectedMode {
+    color: #2ae;
+}
+.error {
+    color: #f00;
+}
+.warning {
+    background-color: #ebb;
+}
+.controls {
+    margin: 1em 3%;
+}
+.controls > button {
+    margin-right: 1em;
+    border: none;
+    background-color: #eee;
+    padding: .5em;
+    font-size: 1.2em;
+    color: #2ae;
+}
+button:hover {
+    cursor: pointer;
+    background-color: #bbb;
+}
