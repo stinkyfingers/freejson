@@ -63,6 +63,17 @@ resource "aws_iam_role_policy" "build" {
       "Resource": [
         "${aws_cloudfront_distribution.distribution.arn}"
       ]
+    },
+    {
+      "Effect":"Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListObject"
+      ],
+        "Resource": [
+            "${aws_s3_bucket.prod_bucket.arn}",
+            "${aws_s3_bucket.prod_bucket.arn}/*"
+        ]
     }
   ]
 }
