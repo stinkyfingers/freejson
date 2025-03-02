@@ -68,12 +68,23 @@ resource "aws_iam_role_policy" "build" {
       "Effect":"Allow",
       "Action": [
         "s3:GetObject",
-        "s3:ListObject"
+        "s3:ListObject",
+        "s3:ListBucket",
+        "s3:PutObject"
       ],
         "Resource": [
             "${aws_s3_bucket.prod_bucket.arn}",
             "${aws_s3_bucket.prod_bucket.arn}/*"
         ]
+    },
+    {
+      "Effect":"Allow",
+      "Action": [
+        "cloudfront:CreateInvalidation"
+      ],
+      "Resource": [
+          "${aws_cloudfront_distribution.prod_distribution.arn}"
+      ]
     }
   ]
 }

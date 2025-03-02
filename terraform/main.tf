@@ -31,12 +31,6 @@ data "aws_iam_policy_document" "prod_cloudfront" {
   }
   statement {
     sid = "Cloudfront Read Access"
-#    principals {
-#      type        = "AWS"
-#      identifiers = [
-#        aws_cloudfront_origin_access_identity.prod_oai.iam_arn
-#      ]
-#    }
     principals {
       type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
@@ -69,10 +63,6 @@ resource "aws_s3_bucket_public_access_block" "prod_pab" {
   block_public_policy = true
 }
 
-#resource "aws_cloudfront_origin_access_identity" "prod_oai" {
-#  comment = "${var.prod_domain} identity"
-#}
-
 locals {
   s3_origin_id_prod = "${var.project}-prod-origin"
 }
@@ -81,9 +71,6 @@ resource "aws_cloudfront_distribution" "prod_distribution" {
   origin {
     domain_name = aws_s3_bucket.prod_bucket.bucket_domain_name
     origin_id   = local.s3_origin_id_prod
-#    s3_origin_config {
-#      origin_access_identity = aws_cloudfront_origin_access_identity.prod_oai.cloudfront_access_identity_path
-#    }
     origin_access_control_id = aws_cloudfront_origin_access_control.prod_default.id
   }
 
@@ -146,7 +133,6 @@ resource "aws_cloudfront_origin_access_control" "prod_default" {
 
 resource "aws_route53_record" "prod_record" {
   zone_id = var.prod_zone_id
-#  name    = var.prod_domain
   name = ""
   type    = "A"
 
