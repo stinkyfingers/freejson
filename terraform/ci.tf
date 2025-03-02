@@ -116,12 +116,57 @@ resource "aws_codebuild_project" "app" {
   }
 
   tags = {
-    "Environment" = "Prod"
+    "Environment" = "Dev"
   }
 }
 
 resource "aws_codebuild_webhook" "app" {
   project_name = aws_codebuild_project.app.name
+  filter_group {
+    filter {
+      type = "EVENT"
+      pattern = "PUSH"
+    }
+
+    filter {
+      type = "HEAD_REF"
+      pattern = "master"
+      exclude_matched_pattern = true
+    }
+  }
+}
+
+resource "aws_codebuild_project" "prod_app" {
+  name          = var.project
+  description   = var.project
+  build_timeout = "5"
+  service_role  = aws_iam_role.build.arn
+
+  artifacts {
+    type = "NO_ARTIFACTS"
+  }
+
+  environment {
+    compute_type                = "BUILD_GENERAL1_SMALL"
+    image                       = "aws/codebuild/standard:7.0"
+    type                        = "LINUX_CONTAINER"
+    image_pull_credentials_type = "CODEBUILD"
+  }
+
+  source {
+    type            = "GITHUB"
+    location        = "https://github.com/stinkyfingers/${var.project}.git"
+    git_clone_depth = 1
+    buildspec       = "buildspec.prod.yml"
+  }
+
+  tags = {
+    "Environment" = "Prod"
+  }
+}
+
+resource "aws_codebuild_webhook" "prod_app" {
+  project_name = aws_codebuild_project.prod_app.name
   filter_group {
     filter {
       type = "EVENT"
