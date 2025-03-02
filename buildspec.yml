@@ -12,7 +12,9 @@ phases:
   post_build:
     commands:
       - aws s3 sync build s3://freejson.john-shenk.com
+      - aws s3 sync build s3://freejson.json.ninja
       - aws cloudfront create-invalidation --paths /index.html --distribution-id E11BTYW60UMYFH
+      - aws cloudfront create-invalidation --paths /index.html --distribution-id E2098WBK5XLN5A
 artifacts:
   files:
     - 'build/*'

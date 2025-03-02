@@ -1,20 +1,14 @@
-# provider
-provider "aws" {
-  profile = var.profile
-  region  = var.region
-}
-
 # s3
-resource "aws_s3_bucket" "bucket" {
-  bucket = "${var.project}.${var.domain}"
+resource "aws_s3_bucket" "prod_bucket" {
+  bucket = "${var.project}.${var.prod_domain}"
 }
 
-resource "aws_s3_bucket_policy" "cloudfront" {
-  bucket = aws_s3_bucket.bucket.id
-  policy = data.aws_iam_policy_document.cloudfront.json
+resource "aws_s3_bucket_policy" "prod_cloudfront" {
+  bucket = aws_s3_bucket.prod_bucket.id
+  policy = data.aws_iam_policy_document.prod_cloudfront.json
 }
 
-data "aws_iam_policy_document" "cloudfront" {
+data "aws_iam_policy_document" "prod_cloudfront" {
   statement {
     principals {
       type        = "Service"
@@ -27,72 +21,82 @@ data "aws_iam_policy_document" "cloudfront" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${var.project}.${var.domain}/*"
+      "arn:aws:s3:::${var.project}.${var.prod_domain}/*"
     ]
     condition {
       test = "StringEquals"
       variable = "AWS:SourceArn"
-      values = ["${aws_cloudfront_distribution.distribution.arn}"]
+      values = [aws_cloudfront_distribution.prod_distribution.arn]
     }
   }
   statement {
     sid = "Cloudfront Read Access"
+#    principals {
+#      type        = "AWS"
+#      identifiers = [
+#        aws_cloudfront_origin_access_identity.prod_oai.iam_arn
+#      ]
+#    }
     principals {
-      type        = "AWS"
-      identifiers = [
-        aws_cloudfront_origin_access_identity.oai.iam_arn
-      ]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.prod_distribution.arn]
     }
     actions = [
       "s3:GetObject"
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${var.project}.${var.domain}/*"
+      "arn:aws:s3:::${var.project}.${var.prod_domain}/*"
     ]
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
-  bucket = aws_s3_bucket.bucket.id
+resource "aws_s3_bucket_ownership_controls" "prod_s3_bucket_acl_ownership" {
+  bucket = aws_s3_bucket.prod_bucket.id
   rule {
     object_ownership = "ObjectWriter"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "pab" {
-  bucket = aws_s3_bucket.bucket.id
+resource "aws_s3_bucket_public_access_block" "prod_pab" {
+  bucket = aws_s3_bucket.prod_bucket.id
   block_public_acls   = true
   block_public_policy = true
 }
 
-resource "aws_cloudfront_origin_access_identity" "oai" {
-  comment = "${var.project}.${var.domain} identity"
-}
+#resource "aws_cloudfront_origin_access_identity" "prod_oai" {
+#  comment = "${var.prod_domain} identity"
+#}
 
 locals {
-  s3_origin_id = "${var.project}-origin"
+  s3_origin_id_prod = "${var.project}-prod-origin"
 }
 
-resource "aws_cloudfront_distribution" "distribution" {
+resource "aws_cloudfront_distribution" "prod_distribution" {
   origin {
-    domain_name = aws_s3_bucket.bucket.bucket_domain_name
-    origin_id   = local.s3_origin_id
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path
-    }
+    domain_name = aws_s3_bucket.prod_bucket.bucket_domain_name
+    origin_id   = local.s3_origin_id_prod
+#    s3_origin_config {
+#      origin_access_identity = aws_cloudfront_origin_access_identity.prod_oai.cloudfront_access_identity_path
+#    }
+    origin_access_control_id = aws_cloudfront_origin_access_control.prod_default.id
   }
 
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
 
-  aliases = ["${var.project}.${var.domain}"]
+  aliases = [var.prod_domain]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.s3_origin_id
+    target_origin_id = local.s3_origin_id_prod
     trusted_signers = []
 
     forwarded_values {
@@ -119,7 +123,7 @@ resource "aws_cloudfront_distribution" "distribution" {
 }
 
   viewer_certificate {
-      acm_certificate_arn            = var.certificate_arn
+      acm_certificate_arn            = var.prod_certificate_arn
       cloudfront_default_certificate = false
       minimum_protocol_version       = "TLSv1.1_2016"
       ssl_support_method             = "sni-only"
@@ -132,22 +136,23 @@ resource "aws_cloudfront_distribution" "distribution" {
   }
 }
 
-resource "aws_cloudfront_origin_access_control" "default" {
-  name                              = "${var.project}"
+resource "aws_cloudfront_origin_access_control" "prod_default" {
+  name                              = var.domain
   description                       = "Default Policy"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
 }
 
-resource "aws_route53_record" "record" {
-  zone_id = var.zone_id
-  name    = "${var.project}.${var.domain}"
+resource "aws_route53_record" "prod_record" {
+  zone_id = var.prod_zone_id
+#  name    = var.prod_domain
+  name = ""
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.distribution.hosted_zone_id
+    name                   = aws_cloudfront_distribution.prod_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.prod_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }
