@@ -129,7 +129,7 @@ resource "aws_codebuild_webhook" "app" {
     }
 
     filter {
-      type = "HEAD_REF"
+      type = "BASE_REF"
       pattern = "master"
       exclude_matched_pattern = true
     }
@@ -174,7 +174,7 @@ resource "aws_codebuild_webhook" "prod_app" {
     }
 
     filter {
-      type = "HEAD_REF"
+      type = "BASE_REF"
       pattern = "master"
     }
   }
