@@ -78,14 +78,14 @@ const Editor = () => {
 		const preview = lines.map((l, i) => {
 			if (i === line) {
 				const chars = l.split('');
-				chars[column] = `<span class=${style.warning}>${chars[column]}</span>`;
+				chars[column] = `<span class=${style.warning}>${chars[column] || ' '}</span>`;
 				return chars.join('');
 			}
 			return l;
 		}).join('\n');
 		setPreview(preview);
 	}, [data, formatErrorLocation]);
-	
+	// simultaneous scroll
 	React.useEffect(() => {
 		const textareaComponent = dataRef.current;
 		const previewComponent = previewRef.current;
@@ -96,7 +96,7 @@ const Editor = () => {
 			textareaComponent.scrollTop = previewComponent.scrollTop;
 		});
 	}, [dataRef, previewRef]);
-	
+	// check JSON errors
 	React.useEffect(() => {
 		if (formatError) return;
 		try {
@@ -104,14 +104,18 @@ const Editor = () => {
 		} catch (e) {
 			return;
 		}
-	}, [data, formatError])
+	}, [data, formatError]);
+	// select placeholder text on load
+	React.useEffect(() => {
+		dataRef.current.select();
+	}, []);
 	const handleDataChange = (k, v, obj) => {
 		setData(JSON.stringify(obj));
 	};
 	const handleMode = (val) => {
 		if (formatError && val === 'json') return;
 		setMode(val);
-	}
+	};
 
 	return (
 		<div className={style.editor}>
@@ -133,7 +137,7 @@ const Editor = () => {
 						>
 							Data
 						</span>
-						<span>&nbsp;(click for mode)</span>
+						{ formatError ? null : (<span>&nbsp;(click for mode)</span>) }
 					</div>
 					{
 						{

@@ -72,3 +72,7 @@ button:hover {
     cursor: pointer;
     background-color: #bbb;
 }
+.controls > button:disabled {
+    background-color: #ccc;
+    color: #999;
+}
