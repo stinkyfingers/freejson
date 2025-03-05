@@ -17,7 +17,7 @@ function App() {
         <h1 className="pageHeader">JSON linter - formatter - compresser - checker</h1>
         <h1 className="title">JSON.Ninja</h1>
         <h5 onClick={() => setInfo(!info)} className="infoButton">{info ? "(Close) " : null }About JSON</h5>
-        { info ? <Info /> : null }
+        <div className={ info ? "" : "hidden" }><Info /></div>
         <Editor />
       </div>
     </HelmetProvider>
