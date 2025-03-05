@@ -76,3 +76,7 @@ button:hover {
     background-color: #ccc;
     color: #999;
 }
+.download {
+    text-decoration: none;
+    color: #2ae;
+}

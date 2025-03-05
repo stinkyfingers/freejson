@@ -116,6 +116,7 @@ const Editor = () => {
 		if (formatError && val === 'json') return;
 		setMode(val);
 	};
+	const file = new Blob([data], { type: 'text/plain' });
 
 	return (
 		<div className={style.editor}>
@@ -177,6 +178,14 @@ const Editor = () => {
 				<button onClick={handleFormat} disabled={!!formatError}>Format</button>
 				<button onClick={handleCompress} disabled={!!formatError}>Compress</button>
 				<button onClick={handleClipboard}>Copy</button>
+				<button>
+					<a
+						download="ninja.json"
+						target="_blank"
+						rel="noreferrer"
+						className={style.download}
+						href={URL.createObjectURL(file)}>Download</a>
+				</button>
 			</div>
 		</div>
 	);
