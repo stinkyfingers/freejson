@@ -3,3 +3,19 @@
     margin: 0;
     color: #2ae;
 }
+.pageHeader {
+    margin: 0;
+    text-align: center;
+    color: #ccc;
+    font-size: .6em
+}
+.infoButton {
+    margin: 0;
+    color: #ccc;
+    text-align: center;
+    font-size: .6em;
+}
+.infoButton:hover {
+    cursor: pointer;
+    color: #4cf;
+}
