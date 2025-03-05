@@ -58,10 +58,11 @@
     background-color: #ebb;
 }
 .controls {
-    margin: 1em 3%;
+    margin: .4em 3%;
+    display: flex;
 }
 .controls > button {
-    margin-right: 1em;
+    margin-right: .5em;
     border: none;
     background-color: #eee;
     padding: .5em;
