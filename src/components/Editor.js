@@ -53,7 +53,7 @@ const Editor = () => {
 	};
 	const handleClipboard = () => {
 		navigator.clipboard.writeText(data);
-	}
+	};
 
 	// format data & track format errors
 	React.useEffect(() => {
