@@ -58,11 +58,12 @@
     background-color: #ebb;
 }
 .controls {
-    margin: .4em 3%;
-    display: flex;
+    padding-top: .5em;
+    width: 95vw;
+    margin: auto;
 }
 .controls > button {
-    margin-right: .5em;
+    margin: .2em;
     border: none;
     background-color: #eee;
     padding: .5em;
@@ -80,4 +81,11 @@ button:hover {
 .download {
     text-decoration: none;
     color: #2ae;
+}
+
+@media screen and (max-width: 600px) {
+    .controls {
+        display: flex;
+        justify-content: space-between;
+    }
 }
