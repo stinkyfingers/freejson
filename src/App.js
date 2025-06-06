@@ -10,9 +10,13 @@ function App() {
     <HelmetProvider>
       <div className="App">
         <Helmet>
-          <title>JSON.Ninja</title>
-          <meta name="description" content="The easy, clean JSON linter and formatter. Format and lint you json text enabling you to copy and paste it with ninja-like ease." />
+          <title>JSON.Ninja | Free Online JSON Formatter and Validator</title>
+          <meta name="description" content="The easy, clean, free JSON linter and formatter. Format, validate and lint your json text enabling you to copy and paste it with ninja-like ease." />
           <meta name="keywords" content="JSON, Json, json, format, formatted, formatter, formatting, lint, linting, linter, linted, easy, ninja, javascript, software, programmer, developer, programming, go, python, react, reactjs, angular, angularjs, node, nodejs, write, copy, paste, converter, convert, java, c, c++" />
+          <meta property="og:title" content="JSON Ninja - Free Online JSON Formatter" />
+          <meta property="og:description" content="Paste JSON and beautify, correct, and validate instantly." />
+          <meta property="og:url" content="https://json.ninja" />
+          <meta name="twitter:card" content="summary" />
         </Helmet>
         <h1 className="pageHeader">JSON linter - formatter - compresser - checker</h1>
         <h1 className="title">JSON.Ninja</h1>
